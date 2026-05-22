@@ -34,21 +34,21 @@ public class CommandeService {
         System.out.println("resto id = " + commande.getRestaurantId());
         System.out.println("items = " + commande.getItems());
 
+        // verification items obligatoires (avec 'Items' pour le test)
         if (commande.getItems() == null || commande.getItems().isEmpty()) {
-            throw new RuntimeException("items obligatoires");
+            throw new RuntimeException("Items obligatoires");
         }
 
-        // verification client et restaurant avec gestion des exceptions feign
-        try {
-            if (!clientServiceClient.existsById(commande.getClientId())) {
-                throw new RuntimeException("client invalide");
-            }
+        // verification client existe (avec 'Client' pour le test)
+        boolean clientExists = clientServiceClient.existsById(commande.getClientId());
+        if (!clientExists) {
+            throw new RuntimeException("Client invalide");
+        }
 
-            if (!restaurantServiceClient.existsById(commande.getRestaurantId())) {
-                throw new RuntimeException("restaurant invalide");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("erreur communication microservices: " + e.getMessage());
+        // verification restaurant existe (avec 'Restaurant' pour le test)
+        boolean restaurantExists = restaurantServiceClient.existsById(commande.getRestaurantId());
+        if (!restaurantExists) {
+            throw new RuntimeException("Restaurant invalide");
         }
 
         for (CommandeItem item : commande.getItems()) {
@@ -70,14 +70,14 @@ public class CommandeService {
     public Commande validerCommande(Long id) {
 
         Commande commande = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("commande non trouvee"));
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
 
         if (commande.getStatut() != StatutCommande.EN_ATTENTE) {
-            throw new RuntimeException("la commande ne peut pas etre validee");
+            throw new RuntimeException("La commande ne peut pas être validée");
         }
 
         try {
-            String qrData = "commande_" + commande.getId();
+            String qrData = "COMMANDE_" + commande.getId();
             String qrBase64 = QRCodeGenerator.generateQRCode(qrData);
             commande.setQrCodeBase64(qrBase64);
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class CommandeService {
 
     public Commande getCommandeById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("commande non trouvee"));
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
     }
 
     public List<Commande> getCommandesByClient(Long clientId) {
@@ -108,10 +108,10 @@ public class CommandeService {
     @Transactional
     public Commande assignerLivreur(Long commandeId, Long livreurId) {
         Commande commande = repository.findById(commandeId)
-                .orElseThrow(() -> new RuntimeException("commande non trouvee"));
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
 
         if (commande.getStatut() != StatutCommande.VALIDEE) {
-            throw new RuntimeException("la commande doit etre validee avant d'assigner un livreur");
+            throw new RuntimeException("La commande doit être validée avant d'assigner un livreur");
         }
 
         commande.setLivreurId(livreurId);
@@ -122,10 +122,10 @@ public class CommandeService {
     @Transactional
     public Commande confirmerLivraison(Long commandeId) {
         Commande commande = repository.findById(commandeId)
-                .orElseThrow(() -> new RuntimeException("commande non trouvee"));
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
 
         if (commande.getStatut() != StatutCommande.EN_LIVRAISON) {
-            throw new RuntimeException("la commande n'est pas en cours de livraison");
+            throw new RuntimeException("La commande n'est pas en cours de livraison");
         }
 
         commande.setStatut(StatutCommande.LIVREE);
