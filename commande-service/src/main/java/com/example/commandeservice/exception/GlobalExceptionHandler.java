@@ -14,35 +14,45 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        
         String message = ex.getMessage();
+        error.put("error", message);
         
-        if (message != null && message.contains("client invalide")) {
+        if (message == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+        
+        // verification pour client invalide (avec majuscule)
+        if (message.contains("Client invalide") || message.contains("client invalide")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        if (message != null && message.contains("restaurant invalide")) {
+        // verification pour restaurant invalide
+        if (message.contains("Restaurant invalide") || message.contains("restaurant invalide")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        if (message != null && message.contains("items obligatoires")) {
+        // verification pour items obligatoires
+        if (message.contains("Items obligatoires") || message.contains("items obligatoires")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        if (message != null && message.contains("commande non trouvee")) {
+        // verification pour commande non trouvee
+        if (message.contains("Commande non trouvée") || message.contains("commande non trouvee")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
         
-        if (message != null && message.contains("ne peut pas etre validee")) {
+        // verification pour commande ne peut pas etre validee
+        if (message.contains("La commande ne peut pas être validée") || message.contains("ne peut pas etre validee")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        if (message != null && message.contains("doit etre validee avant")) {
+        // verification pour commande doit etre validee avant d'assigner un livreur
+        if (message.contains("doit être validée avant") || message.contains("doit etre validee avant")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        if (message != null && message.contains("pas en cours de livraison")) {
+        // verification pour commande pas en cours de livraison
+        if (message.contains("n'est pas en cours de livraison") || message.contains("pas en cours de livraison")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         

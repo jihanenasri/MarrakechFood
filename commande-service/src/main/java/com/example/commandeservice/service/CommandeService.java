@@ -61,7 +61,9 @@ public class CommandeService {
 
         commande.setTotal(total);
         commande.setStatut(StatutCommande.EN_ATTENTE);
-        commande.setDateCommande(LocalDateTime.now());
+        if (commande.getDateCommande() == null) {
+            commande.setDateCommande(LocalDateTime.now());
+        }
 
         return repository.save(commande);
     }
