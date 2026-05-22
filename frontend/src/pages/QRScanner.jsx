@@ -7,20 +7,14 @@ function QRScanner() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const scan = async () => {
-
-      let input = prompt("Entrer QR (COMMANDE_15)");
-
+      const input = prompt("Entrer QR (COMMANDE_15)");
       if (!input) {
         navigate("/livreur/dashboard");
         return;
       }
 
-      // CLEAN ULTRA IMPORTANT
       const qr = input.trim().replace(/"/g, "").replace(/\s/g, "");
-
-      console.log("QR envoyé =", qr);
 
       if (!qr.startsWith("COMMANDE_")) {
         alert("QR invalide");
@@ -28,26 +22,24 @@ function QRScanner() {
       }
 
       try {
-        const response = await livreurAPI.scanQR(qr);
-
+        await livreurAPI.scanQR(qr);
         alert("Livraison confirmée ✅");
         navigate("/livreur/dashboard");
-
       } catch (err) {
-        console.log(err);
-
-        alert(
-          "Erreur backend: " +
-          (err.response?.data || err.message)
-        );
+        alert("Erreur backend: " + (err.response?.data || err.message));
       }
     };
 
     scan();
-
   }, [commandeId, navigate]);
 
-  return <h2>Scan QR...</h2>;
+  return (
+    <div className="app-page d-flex align-items-center justify-content-center">
+      <div className="premium-card p-4 text-center">
+        <h2>📷 Scan QR...</h2>
+      </div>
+    </div>
+  );
 }
 
 export default QRScanner;

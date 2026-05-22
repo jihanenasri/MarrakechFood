@@ -11,19 +11,21 @@ function AdminRestaurantForm() {
     adresse: '',
     telephone: '',
     typeCuisine: '',
+    image: '',
     statut: 'OUVERT'
   });
 
   useEffect(() => {
-    if (id) {
-      fetchRestaurant();
-    }
+    if (id) fetchRestaurant();
   }, [id]);
 
   const fetchRestaurant = async () => {
     try {
       const response = await restaurantAPI.getById(id);
-      setFormData(response.data);
+      setFormData({
+        ...response.data,
+        image: response.data.image || ''
+      });
     } catch (err) {
       alert('Erreur chargement du restaurant');
     }
@@ -53,36 +55,53 @@ function AdminRestaurantForm() {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: '50px auto', padding: 20, border: '1px solid #ddd', borderRadius: 10 }}>
-      <h2>{id ? '✏️ Modifier le restaurant' : '➕ Ajouter un restaurant'}</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nom :</label>
-          <input name="nom" value={formData.nom} onChange={handleChange} required style={{ width: '100%', padding: 8, margin: '10px 0' }} />
+    <div className="app-page">
+      <div className="container form-shell">
+        <div className="premium-card p-4 p-md-5">
+          <h2 className="text-center section-title mb-4" style={{ color: '#FF6B35' }}>
+            {id ? '✏️ Modifier le restaurant' : '➕ Ajouter un restaurant'}
+          </h2>
+
+          <form onSubmit={handleSubmit} className="input-rounded">
+            <div className="mb-3">
+              <label className="form-label">Nom</label>
+              <input name="nom" value={formData.nom} onChange={handleChange} required className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Adresse</label>
+              <input name="adresse" value={formData.adresse} onChange={handleChange} required className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Téléphone</label>
+              <input name="telephone" value={formData.telephone} onChange={handleChange} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Type de cuisine</label>
+              <input name="typeCuisine" value={formData.typeCuisine} onChange={handleChange} className="form-control" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Image du restaurant</label>
+              <input name="image" value={formData.image} onChange={handleChange} className="form-control" placeholder="URL image" />
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label">Statut</label>
+              <select name="statut" value={formData.statut} onChange={handleChange} className="form-select">
+                <option value="OUVERT">Ouvert</option>
+                <option value="FERME">Fermé</option>
+              </select>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn orange-btn w-100">
+              {loading ? 'Enregistrement...' : (id ? 'Modifier' : 'Ajouter')}
+            </button>
+          </form>
         </div>
-        <div>
-          <label>Adresse :</label>
-          <input name="adresse" value={formData.adresse} onChange={handleChange} required style={{ width: '100%', padding: 8, margin: '10px 0' }} />
-        </div>
-        <div>
-          <label>Téléphone :</label>
-          <input name="telephone" value={formData.telephone} onChange={handleChange} style={{ width: '100%', padding: 8, margin: '10px 0' }} />
-        </div>
-        <div>
-          <label>Type de cuisine :</label>
-          <input name="typeCuisine" value={formData.typeCuisine} onChange={handleChange} style={{ width: '100%', padding: 8, margin: '10px 0' }} />
-        </div>
-        <div>
-          <label>Statut :</label>
-          <select name="statut" value={formData.statut} onChange={handleChange} style={{ width: '100%', padding: 8, margin: '10px 0' }}>
-            <option value="OUVERT">Ouvert</option>
-            <option value="FERME">Fermé</option>
-          </select>
-        </div>
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10, background: '#FF6B35', color: 'white', border: 'none', borderRadius: 5 }}>
-          {loading ? 'Enregistrement...' : (id ? 'Modifier' : 'Ajouter')}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

@@ -16,32 +16,42 @@ function LivreurDashboard() {
       const response = await commandeAPI.getByStatut('VALIDEE');
       setCommandes(response.data);
     } catch (err) {
-      console.error(err);
       alert('Erreur chargement commandes');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div>Chargement...</div>;
+  if (loading) return <div className="text-center mt-5">Chargement...</div>;
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 20 }}>
-      <h1 style={{ color: '#FF6B35' }}>🚚 Commandes à livrer</h1>
-      {commandes.length === 0 ? (
-        <p>Aucune commande en attente.</p>
-      ) : (
-        commandes.map(cmd => (
-          <div key={cmd.id} style={{ border: '1px solid #ddd', margin: 10, padding: 15, borderRadius: 8 }}>
-            <h3>Commande #{cmd.id}</h3>
-            <p>Adresse : {cmd.adresseLivraison}</p>
-            <p>Total : {cmd.total} DH</p>
-            <button onClick={() => navigate(`/livreur/scan/${cmd.id}`)}>
-              📷 Scanner QR
-            </button>
+    <div className="app-page">
+      <div className="container" style={{ maxWidth: 900 }}>
+        <h1 className="section-title mb-4" style={{ color: '#FF6B35' }}>🚚 Commandes à livrer</h1>
+
+        {commandes.length === 0 ? (
+          <div className="premium-card p-4 text-center">
+            <div className="alert alert-info mb-0">Aucune commande en attente.</div>
           </div>
-        ))
-      )}
+        ) : (
+          <div className="d-grid gap-3">
+            {commandes.map(cmd => (
+              <div key={cmd.id} className="premium-card p-4">
+                <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div>
+                    <h5 className="mb-2">Commande #{cmd.id}</h5>
+                    <p className="mb-1">📍 Adresse : {cmd.adresseLivraison}</p>
+                    <p className="mb-0">💰 Total : {cmd.total} DH</p>
+                  </div>
+                  <button onClick={() => navigate(`/livreur/scan/${cmd.id}`)} className="btn orange-btn">
+                    📷 Scanner QR
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

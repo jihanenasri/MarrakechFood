@@ -33,6 +33,21 @@ public class RestaurantController {
     public List<Restaurant> getAllRestaurants() {
         return restaurantService.getAllRestaurants();
     }
+
+    // ajout de endpoint pour recuperer un plat avec id
+    @GetMapping("/plats/{id}")
+    public ResponseEntity<Plat> getPlatById(@PathVariable Long id) {
+        return restaurantService.getPlatById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // ajout endpoint pour modifier un plat
+    @PutMapping("/plats/{id}")
+    public ResponseEntity<Plat> updatePlat(@PathVariable Long id, @RequestBody Plat plat) {
+        return ResponseEntity.ok(restaurantService.updatePlat(id, plat));
+    }
+
     @DeleteMapping("/plats/{platId}")
     public ResponseEntity<Void> deletePlat(@PathVariable Long platId) {
         restaurantService.deletePlat(platId);

@@ -28,96 +28,61 @@ function Register() {
       alert('Inscription réussie ! Vous pouvez vous connecter.');
       navigate('/login');
     } catch (err) {
-      setError('Erreur lors de l\'inscription. Email peut-être déjà utilisé.');
-      console.error('Erreur register:', err);
+      setError("Erreur lors de l'inscription. Email peut-être déjà utilisé.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: '50px auto', padding: 20, border: '1px solid #ccc', borderRadius: 10 }}>
-      <h2 style={{ textAlign: 'center', color: '#FF6B35' }}>Inscription</h2>
-      
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nom :</label>
-          <input
-            name="nom"
-            value={formData.nom}
-            onChange={handleChange}
-            style={{ width: '100%', padding: 8, margin: '10px 0' }}
-            required
-          />
+    <div className="app-page d-flex align-items-center">
+      <div className="container form-shell">
+        <div className="premium-card p-4 p-md-5">
+          <h2 className="text-center section-title mb-4" style={{ color: '#FF6B35' }}>Créer un compte</h2>
+
+          {error && <div className="alert alert-danger">{error}</div>}
+
+          <form onSubmit={handleSubmit} className="input-rounded">
+            <div className="mb-3">
+              <label className="form-label">Nom</label>
+              <input name="nom" className="form-control" value={formData.nom} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Mot de passe</label>
+              <input type="password" name="motDePasse" className="form-control" value={formData.motDePasse} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Téléphone</label>
+              <input name="telephone" className="form-control" value={formData.telephone} onChange={handleChange} />
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label">Adresse</label>
+              <input name="adresse" className="form-control" value={formData.adresse} onChange={handleChange} />
+            </div>
+
+            <button type="submit" className="btn orange-btn w-100" disabled={loading}>
+              {loading ? 'Inscription...' : "S'inscrire"}
+            </button>
+          </form>
+
+          <div className="text-center mt-3">
+            <small>
+              Déjà un compte ?{' '}
+              <button onClick={() => navigate('/login')} className="btn btn-link text-decoration-none p-0" style={{ color: '#FF6B35' }}>
+                Se connecter
+              </button>
+            </small>
+          </div>
         </div>
-        <div>
-          <label>Email :</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            style={{ width: '100%', padding: 8, margin: '10px 0' }}
-            required
-          />
-        </div>
-        <div>
-          <label>Mot de passe :</label>
-          <input
-            type="password"
-            name="motDePasse"
-            value={formData.motDePasse}
-            onChange={handleChange}
-            style={{ width: '100%', padding: 8, margin: '10px 0' }}
-            required
-          />
-        </div>
-        <div>
-          <label>Téléphone :</label>
-          <input
-            name="telephone"
-            value={formData.telephone}
-            onChange={handleChange}
-            style={{ width: '100%', padding: 8, margin: '10px 0' }}
-          />
-        </div>
-        <div>
-          <label>Adresse :</label>
-          <input
-            name="adresse"
-            value={formData.adresse}
-            onChange={handleChange}
-            style={{ width: '100%', padding: 8, margin: '10px 0' }}
-          />
-        </div>
-        <button 
-          type="submit" 
-          disabled={loading}
-          style={{ 
-            width: '100%', 
-            padding: 10, 
-            background: '#FF6B35', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: 5,
-            marginTop: 10
-          }}
-        >
-          {loading ? 'Inscription...' : "S'inscrire"}
-        </button>
-      </form>
-      
-      <p style={{ textAlign: 'center', marginTop: 20 }}>
-        Déjà un compte ?{' '}
-        <button 
-          onClick={() => navigate('/login')}
-          style={{ background: 'none', border: 'none', color: '#FF6B35', cursor: 'pointer' }}
-        >
-          Se connecter
-        </button>
-      </p>
+      </div>
     </div>
   );
 }

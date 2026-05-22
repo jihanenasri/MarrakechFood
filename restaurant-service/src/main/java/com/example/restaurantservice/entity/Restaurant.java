@@ -6,7 +6,6 @@ import lombok.*;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "restaurants")
@@ -37,9 +36,10 @@ public class Restaurant {
     @Enumerated(EnumType.STRING)
     private StatutRestaurant statut = StatutRestaurant.OUVERT;
 
+    // ajout du champ image
+    @Column(length = 500)
+    private String image;
     
-   
-   
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Plat> plats;

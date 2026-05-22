@@ -10,6 +10,8 @@ function RestaurantDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const isAdmin = localStorage.getItem('role') === 'ADMIN';
+
   useEffect(() => {
     fetchData();
   }, [id]);
@@ -24,7 +26,6 @@ function RestaurantDetail() {
       setPlats(platsRes.data);
     } catch (err) {
       setError('Erreur chargement du restaurant');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -33,13 +34,13 @@ function RestaurantDetail() {
   const ajouterAuPanier = (plat) => {
     const panier = JSON.parse(localStorage.getItem('panier') || '[]');
     const existing = panier.find(p => p.id === plat.id);
-    
+
     if (existing) {
       existing.quantite++;
     } else {
       panier.push({ ...plat, quantite: 1, restaurantId: parseInt(id) });
     }
-    
+
     localStorage.setItem('panier', JSON.stringify(panier));
     alert(`${plat.nom} ajouté au panier !`);
   };
@@ -56,87 +57,101 @@ function RestaurantDetail() {
     }
   };
 
-  if (loading) return <div style={{ textAlign: 'center', marginTop: 50 }}>Chargement...</div>;
-  if (error) return <div style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</div>;
+  if (loading) return <div className="text-center mt-5">Chargement...</div>;
+  if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 20 }}>
-      <button onClick={() => navigate('/restaurants')} style={{ marginBottom: 20, padding: '8px 16px', cursor: 'pointer' }}>
-        ← Retour
-      </button>
-      
-      <h1 style={{ color: '#FF6B35' }}>{restaurant?.nom}</h1>
-      <p>📍 {restaurant?.adresse}</p>
-      <p>🍳 {restaurant?.typeCuisine}</p>
-      
-      <button 
-        onClick={() => navigate(`/admin/plat/add/${id}`)} 
-        style={{ marginBottom: 20, marginLeft: 20, padding: 10, backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}
-      >
-        ➕ Ajouter un plat
-      </button>
-      
-      <h2 style={{ marginTop: 30 }}>Notre carte</h2>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
-        {plats.map((plat) => (
-          <div key={plat.id} style={{ border: '1px solid #ddd', borderRadius: 8, padding: 15 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="app-page">
+      <div className="container">
+        <button onClick={() => navigate('/restaurants')} className="btn btn-outline-secondary soft-btn mb-3">
+          ← Retour
+        </button>
+
+        <div className="premium-card mb-4">
+          {/* Affiche l'image du restaurant (celle stockée en base ou une par défaut) */}
+         <img
+             src={restaurant?.image || 'https://placehold.co/1200x500/FF6B35/white?text=Restaurant+Food'}
+             alt={restaurant?.nom}
+            className="food-image-lg"
+            style={{ width: '100%', height: '300px', objectFit: 'cover' }}
+/>
+          <div className="p-4 p-md-5">
+            <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
               <div>
-                <h3 style={{ margin: '0 0 5px 0' }}>{plat.nom}</h3>
-                <p style={{ margin: 0, color: '#666' }}>{plat.description}</p>
-                <p style={{ margin: '10px 0 0 0', fontWeight: 'bold', color: '#FF6B35' }}>{plat.prix} DH</p>
+                <h1 className="section-title" style={{ color: '#FF6B35' }}>{restaurant?.nom}</h1>
+                <p className="mb-1">📍 {restaurant?.adresse}</p>
+                <p className="mb-0">🍳 {restaurant?.typeCuisine}</p>
               </div>
-              <button 
-                onClick={() => ajouterAuPanier(plat)}
-                style={{ 
-                  padding: '10px 20px', 
-                  backgroundColor: '#FF6B35', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: 5,
-                  cursor: 'pointer'
-                }}
-              >
-                Ajouter
-              </button>
-            </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
-              <button 
-                onClick={() => navigate(`/admin/plat/edit/${plat.id}/restaurant/${id}`)} 
-                style={{ padding: '5px 10px', cursor: 'pointer' }}
-              >
-                ✏️ Modifier
-              </button>
-              <button 
-                onClick={() => handleDeletePlat(plat.id, plat.nom)} 
-                style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#dc3545', color: 'white', border: 'none' }}
-              >
-                🗑️ Supprimer
-              </button>
+
+              {isAdmin && (
+                <button
+                  onClick={() => navigate(`/admin/plat/add/${id}`)}
+                  className="btn orange-btn"
+                >
+                  ➕ Ajouter un plat
+                </button>
+              )}
             </div>
           </div>
-        ))}
+        </div>
+
+        <h2 className="mb-4 section-title">Notre carte</h2>
+
+        <div className="row g-4">
+          {plats.map((plat) => (
+            <div key={plat.id} className="col-md-6 col-lg-4">
+              <div className="premium-card h-100">
+                {/* Affiche l'image du plat (celle stockée en base ou une par défaut) */}
+               <img
+                  src={plat.image || 'https://placehold.co/600x400/FF6B35/white?text=Food'}
+                  alt={plat.nom}
+                  className="food-image"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+/>
+                <div className="p-4">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <h5 className="mb-0 section-title">{plat.nom}</h5>
+                    <span className="badge badge-orange rounded-pill">{plat.prix} DH</span>
+                  </div>
+
+                  <p className="text-muted mb-3">{plat.description || 'Délicieux plat du chef.'}</p>
+
+                  <button
+                    onClick={() => ajouterAuPanier(plat)}
+                    className="btn orange-btn w-100 mb-2"
+                  >
+                    Ajouter au panier
+                  </button>
+
+                  {isAdmin && (
+                    <div className="d-flex gap-2">
+                      <button
+                        onClick={() => navigate(`/admin/plat/edit/${plat.id}/restaurant/${id}`)}
+                        className="btn btn-outline-secondary w-50 soft-btn"
+                      >
+                        ✏️ Modifier
+                      </button>
+                      <button
+                        onClick={() => handleDeletePlat(plat.id, plat.nom)}
+                        className="btn btn-outline-danger w-50 soft-btn"
+                      >
+                        🗑️ Supprimer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={() => navigate('/cart')}
+          className="btn orange-btn floating-cart"
+        >
+          🛒
+        </button>
       </div>
-      
-      <button 
-        onClick={() => navigate('/cart')}
-        style={{ 
-          position: 'fixed', 
-          bottom: 20, 
-          right: 20, 
-          padding: '15px 25px',
-          backgroundColor: '#FF6B35', 
-          color: 'white',
-          border: 'none',
-          borderRadius: 50,
-          fontSize: 16,
-          cursor: 'pointer',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-        }}
-      >
-        🛒 Voir le panier
-      </button>
     </div>
   );
 }

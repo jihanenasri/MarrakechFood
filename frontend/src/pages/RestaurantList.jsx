@@ -8,6 +8,8 @@ function RestaurantList() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const isAdmin = localStorage.getItem('role') === 'ADMIN';
+
   useEffect(() => {
     fetchRestaurants();
   }, []);
@@ -18,7 +20,6 @@ function RestaurantList() {
       setRestaurants(response.data);
     } catch (err) {
       setError('Erreur chargement des restaurants');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -36,51 +37,88 @@ function RestaurantList() {
     }
   };
 
-  if (loading) return <div style={{ textAlign: 'center', marginTop: 50 }}>Chargement...</div>;
-  if (error) return <div style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</div>;
+  if (loading) return <div className="text-center mt-5">Chargement...</div>;
+  if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 20 }}>
-      <h1 style={{ color: '#FF6B35' }}>🍽️ Marrakech Food</h1>
-      <h2>Nos restaurants</h2>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-        {restaurants.map((restaurant) => (
-          <div 
-            key={restaurant.id} 
-            style={{ 
-              border: '1px solid #ddd', 
-              borderRadius: 10, 
-              padding: 15,
-              cursor: 'pointer',
-              transition: '0.3s',
-              backgroundColor: 'white'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
-          >
-            <div onClick={() => navigate(`/restaurant/${restaurant.id}`)}>
-              <h3 style={{ margin: '0 0 10px 0', color: '#FF6B35' }}>{restaurant.nom}</h3>
-              <p style={{ margin: '5px 0', color: '#666' }}>📍 {restaurant.adresse}</p>
-              <p style={{ margin: '5px 0', color: '#666' }}>🍳 {restaurant.typeCuisine || 'Cuisine variée'}</p>
-              <p style={{ margin: '5px 0', color: '#888' }}>⭐ {restaurant.note || '4.5'} / 5</p>
+    <div className="app-page">
+      <div className="container">
+        <div className="hero-banner p-4 p-md-5 mb-4">
+          <div className="row align-items-center">
+            <div className="col-md-8">
+              {/* Logo + titre */}
+              <div className="d-flex align-items-center gap-3 mb-2">
+                <img 
+                  src="/images/logo.png" 
+                  alt="Marrakech Food" 
+                  style={{ height: '50px', width: 'auto' }}
+                  onError={(e) => { e.target.src = 'https://placehold.co/50x50/FF6B35/white?text=MF'; }}
+                />
+                <div>
+                  <h1 className="section-title mb-0" style={{ color: '#FF6B35' }}>Marrakech Food</h1>
+                  <p className="small text-muted mb-0">DÉCOUVREZ • RÉSERVEZ • SAVOUREZ</p>
+                </div>
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
-              <button 
-                onClick={() => navigate(`/admin/restaurant/edit/${restaurant.id}`)} 
-                style={{ padding: '5px 10px', cursor: 'pointer' }}
-              >
-                ✏️ Modifier
-              </button>
-              <button 
-                onClick={() => handleDelete(restaurant.id, restaurant.nom)} 
-                style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#dc3545', color: 'white', border: 'none' }}
-              >
-                🗑️ Supprimer
+            <div className="col-md-4 text-md-end mt-3 mt-md-0">
+              <button onClick={() => navigate('/cart')} className="btn btn-light soft-btn fw-bold">
+                🛒 Voir le panier
               </button>
             </div>
           </div>
-        ))}
+        </div>
+
+        <div className="row g-4">
+          {restaurants.map((restaurant) => (
+            <div key={restaurant.id} className="col-md-4">
+              <div className="premium-card h-100">
+                <img
+                  src={restaurant.image || 'https://placehold.co/800x500/FF6B35/white?text=Restaurant'}
+                  alt={restaurant.nom}
+                  className="food-image"
+                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                />
+                <div className="p-4">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <h4 className="mb-0 section-title" style={{ color: '#FF6B35' }}>
+                      {restaurant.nom}
+                    </h4>
+                    <span className="badge badge-orange rounded-pill">
+                      ★ {restaurant.note || '4.5'}
+                    </span>
+                  </div>
+
+                  <p className="mb-1">📍 {restaurant.adresse}</p>
+                  <p className="text-muted mb-3">🍳 {restaurant.typeCuisine || 'Cuisine variée'}</p>
+
+                  <button
+                    onClick={() => navigate(`/restaurant/${restaurant.id}`)}
+                    className="btn orange-btn w-100 mb-2"
+                  >
+                    Voir le menu
+                  </button>
+
+                  {isAdmin && (
+                    <div className="d-flex gap-2">
+                      <button
+                        onClick={() => navigate(`/admin/restaurant/edit/${restaurant.id}`)}
+                        className="btn btn-outline-secondary w-50 soft-btn"
+                      >
+                        ✏️ Modifier
+                      </button>
+                      <button
+                        onClick={() => handleDelete(restaurant.id, restaurant.nom)}
+                        className="btn btn-outline-danger w-50 soft-btn"
+                      >
+                        🗑️ Supprimer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -33,6 +33,11 @@ public class RestaurantService {
         return restaurantRepository.findById(id);
     }
 
+    // ✅ AJOUTER CETTE MÉTHODE (manquante)
+    public Optional<Plat> getPlatById(Long id) {
+        return platRepository.findById(id);
+    }
+
     public Restaurant updateRestaurant(Long id, Restaurant restaurant) {
 
         Restaurant existing = restaurantRepository.findById(id)
@@ -43,6 +48,7 @@ public class RestaurantService {
         existing.setTelephone(restaurant.getTelephone());
         existing.setTypeCuisine(restaurant.getTypeCuisine());
         existing.setStatut(restaurant.getStatut());
+        existing.setImage(restaurant.getImage()); // ajout d'image
 
         return restaurantRepository.save(existing);
     }
@@ -55,15 +61,26 @@ public class RestaurantService {
         return platRepository.save(plat);
     }
     
+    // ajout d'une methode manquante
+    public Plat updatePlat(Long id, Plat plat) {
+        Plat existing = platRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plat not found"));
+        
+        existing.setNom(plat.getNom());
+        existing.setDescription(plat.getDescription());
+        existing.setPrix(plat.getPrix());
+        existing.setImage(plat.getImage());
+        
+        return platRepository.save(existing);
+    }
 
-    
     public List<Plat> getPlatsByRestaurant(Long restaurantId) {
         return platRepository.findByRestaurantId(restaurantId);
     }
+    
     public void deletePlat(Long platId) {
         Plat plat = platRepository.findById(platId)
                 .orElseThrow(() -> new RuntimeException("Plat not found"));
-
         platRepository.delete(plat);
     }
 }
