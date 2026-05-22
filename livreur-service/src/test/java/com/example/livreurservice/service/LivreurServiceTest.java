@@ -142,11 +142,22 @@ class LivreurServiceTest {
     void testScannerQRSuccess() {
         String qr = "COMMANDE_1";
 
+        // Mock du livreur disponible
+        Livreur livreur = new Livreur(1L, "Ali", "0600", null, StatutLivreur.DISPONIBLE, null, null);
+        when(repository.findByStatut(StatutLivreur.DISPONIBLE))
+                .thenReturn(List.of(livreur));
+        when(repository.save(any())).thenReturn(livreur);
+
+        // Mock des appels Feign 
+        doNothing().when(commandeClient).validerCommande(1L);
+        doNothing().when(commandeClient).assignerLivreur(1L, 1L);
+        doNothing().when(commandeClient).confirmerLivraison(1L);
+
         String result = livreurService.scannerQRCode(qr);
 
         assertTrue(result.contains("Livraison confirmée"));
-
         verify(commandeClient).confirmerLivraison(1L);
+        verify(commandeClient).assignerLivreur(1L, 1L);
     }
 
     @Test
