@@ -10,7 +10,10 @@ public interface CommandeServiceClient {
     @PutMapping("/api/commandes/{commandeId}/assigner/{livreurId}")
     void assignerLivreur(@PathVariable Long commandeId, @PathVariable Long livreurId);
 
-    
     @PutMapping("/api/commandes/{commandeId}/confirmer-livraison")
     void confirmerLivraison(@PathVariable Long commandeId);
+    
+    // ajout de la methode pour valider la commande
+    @PutMapping("/api/commandes/{id}/valider")
+    void validerCommande(@PathVariable Long id);
 }

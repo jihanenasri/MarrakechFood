@@ -6,7 +6,9 @@ import com.example.livreurservice.service.LivreurService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/livreurs")
@@ -44,27 +46,49 @@ public class LivreurController {
         livreurService.changerStatut(id, statut);
         return ResponseEntity.ok("Statut mis à jour");
     }
+
     @PutMapping("/assigner/{commandeId}")
     public ResponseEntity<Livreur> assignerALaCommande(@PathVariable Long commandeId) {
         return ResponseEntity.ok(livreurService.assignerALaCommande(commandeId));
     }
-    @PostMapping(value = "/scan-qr", consumes = "text/plain", produces = "text/plain")
-    public ResponseEntity<String> scannerQR(@RequestBody String qrCodeData) {
 
+    // endpoint pour scanner QR code (accepte JSON et text/plain)
+    @PostMapping(value = "/scan-qr", consumes = {"text/plain", "application/json"})
+    public ResponseEntity<Map<String, String>> scannerQR(@RequestBody String qrCodeData) {
+        Map<String, String> response = new HashMap<>();
+        
         System.out.println("RAW RECU = [" + qrCodeData + "]");
-
-        String message = livreurService.scannerQRCode(qrCodeData);
-
-        return ResponseEntity.ok(message);
+        
+        // nettoie la chaîne si elle vient d'un JSON
+        String cleanQr = qrCodeData;
+        if (qrCodeData.startsWith("{")) {
+            // extrait la valeur entre guillemets
+            int start = qrCodeData.indexOf("\"") + 1;
+            int end = qrCodeData.lastIndexOf("\"");
+            if (start > 0 && end > start) {
+                cleanQr = qrCodeData.substring(start, end);
+            }
+        }
+        
+        cleanQr = cleanQr.trim().replaceAll("^\"|\"$", "");
+        
+        try {
+            String message = livreurService.scannerQRCode(cleanQr);
+            response.put("message", message);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Livreur> getById(@PathVariable Long id) {
         return livreurService.getLivreurById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    //update
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Livreur> updateLivreur(
             @PathVariable Long id,
@@ -72,13 +96,10 @@ public class LivreurController {
 
         return ResponseEntity.ok(livreurService.updateLivreur(id, livreur));
     }
-    //suppression
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLivreur(@PathVariable Long id) {
         livreurService.deleteLivreur(id);
         return ResponseEntity.ok("Livreur supprimé");
     }
-    
-    
 }
