@@ -18,42 +18,34 @@ public class GlobalExceptionHandler {
         
         String message = ex.getMessage();
         
-        // Client invalide -> 400 Bad Request
-        if (message != null && message.contains("Client invalide")) {
+        if (message != null && message.contains("client invalide")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Restaurant invalide -> 400 Bad Request
-        if (message != null && message.contains("Restaurant invalide")) {
+        if (message != null && message.contains("restaurant invalide")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Items obligatoires -> 400 Bad Request
-        if (message != null && message.contains("Items obligatoires")) {
+        if (message != null && message.contains("items obligatoires")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Commande non trouvée -> 404 Not Found
-        if (message != null && message.contains("Commande non trouvée")) {
+        if (message != null && message.contains("commande non trouvee")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
         
-        // Commande ne peut pas être validée -> 400 Bad Request
-        if (message != null && message.contains("ne peut pas être validée")) {
+        if (message != null && message.contains("ne peut pas etre validee")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Commande doit être validée avant d'assigner un livreur -> 400 Bad Request
-        if (message != null && message.contains("doit être validée avant")) {
+        if (message != null && message.contains("doit etre validee avant")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Commande n'est pas en cours de livraison -> 400 Bad Request
         if (message != null && message.contains("pas en cours de livraison")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
         
-        // Par défaut -> 500 Internal Server Error
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

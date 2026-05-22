@@ -38,27 +38,21 @@ public class CommandeService {
             throw new RuntimeException("items obligatoires");
         }
 
-        if (!clientServiceClient.existsById(commande.getClientId())) {
-            throw new RuntimeException("client invalide");
-        }
+        // verification client et restaurant avec gestion des exceptions feign
+        try {
+            if (!clientServiceClient.existsById(commande.getClientId())) {
+                throw new RuntimeException("client invalide");
+            }
 
-        if (!restaurantServiceClient.existsById(commande.getRestaurantId())) {
-            throw new RuntimeException("restaurant invalide");
+            if (!restaurantServiceClient.existsById(commande.getRestaurantId())) {
+                throw new RuntimeException("restaurant invalide");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("erreur communication microservices: " + e.getMessage());
         }
 
         for (CommandeItem item : commande.getItems()) {
             item.setCommande(commande);
-        }
-        try {
-            boolean clientExists = clientServiceClient.existsById(commande.getClientId());
-            System.out.println("client exists = " + clientExists);
-
-            boolean restoExists = restaurantServiceClient.existsById(commande.getRestaurantId());
-            System.out.println("resto exists = " + restoExists);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("erreur communication microservices");
         }
 
         double total = commande.getItems().stream()
@@ -78,12 +72,10 @@ public class CommandeService {
         Commande commande = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("commande non trouvee"));
 
-        // verification que la commande est bien en attente
         if (commande.getStatut() != StatutCommande.EN_ATTENTE) {
             throw new RuntimeException("la commande ne peut pas etre validee");
         }
 
-        // generation du qr code
         try {
             String qrData = "commande_" + commande.getId();
             String qrBase64 = QRCodeGenerator.generateQRCode(qrData);
@@ -109,12 +101,15 @@ public class CommandeService {
         return repository.findByClientId(clientId);
     }
 
+    public List<Commande> getCommandesByStatut(StatutCommande statut) {
+        return repository.findByStatut(statut);
+    }
+
     @Transactional
     public Commande assignerLivreur(Long commandeId, Long livreurId) {
         Commande commande = repository.findById(commandeId)
                 .orElseThrow(() -> new RuntimeException("commande non trouvee"));
 
-        // verification que la commande est validee avant d'assigner un livreur
         if (commande.getStatut() != StatutCommande.VALIDEE) {
             throw new RuntimeException("la commande doit etre validee avant d'assigner un livreur");
         }
@@ -129,7 +124,6 @@ public class CommandeService {
         Commande commande = repository.findById(commandeId)
                 .orElseThrow(() -> new RuntimeException("commande non trouvee"));
 
-        // verification que la commande est bien en cours de livraison
         if (commande.getStatut() != StatutCommande.EN_LIVRAISON) {
             throw new RuntimeException("la commande n'est pas en cours de livraison");
         }
@@ -137,8 +131,5 @@ public class CommandeService {
         commande.setStatut(StatutCommande.LIVREE);
         commande.setDateLivraison(LocalDateTime.now());
         return repository.save(commande);
-    }
-    public List<Commande> getCommandesByStatut(StatutCommande statut) {
-        return repository.findByStatut(statut);
     }
 }
