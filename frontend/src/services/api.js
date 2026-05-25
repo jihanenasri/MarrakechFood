@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const API_CONFIG = {
-  client: 'http://localhost:8089',
-  restaurant: 'http://localhost:8083',
-  commande: 'http://localhost:8091',
-  livreur: 'http://localhost:8085'
+  client: process.env.REACT_APP_CLIENT_URL,
+  restaurant: process.env.REACT_APP_RESTAURANT_URL,
+  commande: process.env.REACT_APP_COMMANDE_URL,
+  livreur: process.env.REACT_APP_LIVREUR_URL
 };
 
 export const clientAPI = {
@@ -19,9 +19,9 @@ export const restaurantAPI = {
   getPlats: (restaurantId) => axios.get(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`),
   create: (data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants`, data),
   update: (id, data) => axios.put(`${API_CONFIG.restaurant}/api/restaurants/${id}`, data),
-  delete: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/${id}`),  
+  delete: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/${id}`),
   getPlatById: (id) => axios.get(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`),
-  createPlat: (restaurantId, data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`, data),  
+  createPlat: (restaurantId, data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`, data),
   updatePlat: (id, data) => axios.put(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`, data),
   deletePlat: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`)
 };
@@ -44,9 +44,5 @@ export const livreurAPI = {
   )
 };
 
-export default {
-  clientAPI,
-  restaurantAPI,
-  commandeAPI,
-  livreurAPI
-};
+const api = { clientAPI, restaurantAPI, commandeAPI, livreurAPI };
+export default api;

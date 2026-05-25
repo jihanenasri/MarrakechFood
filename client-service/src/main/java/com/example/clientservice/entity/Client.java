@@ -23,4 +23,8 @@ public class Client {
    
     private String adresse;
     private String telephone;
+    
+    // ajout du champ role
+    @Column(nullable = false)
+    private String role = "CLIENT";
 }
