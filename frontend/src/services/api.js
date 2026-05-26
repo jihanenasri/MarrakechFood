@@ -19,9 +19,9 @@ export const restaurantAPI = {
   getPlats: (restaurantId) => axios.get(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`),
   create: (data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants`, data),
   update: (id, data) => axios.put(`${API_CONFIG.restaurant}/api/restaurants/${id}`, data),
-  delete: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/${id}`),  
+  delete: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/${id}`),
   getPlatById: (id) => axios.get(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`),
-  createPlat: (restaurantId, data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`, data),  
+  createPlat: (restaurantId, data) => axios.post(`${API_CONFIG.restaurant}/api/restaurants/${restaurantId}/plats`, data),
   updatePlat: (id, data) => axios.put(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`, data),
   deletePlat: (id) => axios.delete(`${API_CONFIG.restaurant}/api/restaurants/plats/${id}`)
 };

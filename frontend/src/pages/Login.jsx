@@ -19,21 +19,20 @@ function Login({ setIsAuthenticated, setUserRole }) {
 
       localStorage.setItem('clientId', response.data.clientId);
       localStorage.setItem('email', response.data.email);
-
-      let role = 'CLIENT';
-      if (email === 'admin@marrakechfood.com') role = 'ADMIN';
-      else if (email === 'livreur@marrakechfood.com' || email.includes('livreur')) role = 'LIVREUR';
-
-      localStorage.setItem('role', role);
+      localStorage.setItem('role', response.data.role);  // role depuis le backend
 
       if (setIsAuthenticated) setIsAuthenticated(true);
-      if (setUserRole) setUserRole(role);
+      if (setUserRole) setUserRole(response.data.role);
 
-      alert(`Connexion réussie en tant que ${role} !`);
+      alert(`Connexion réussie en tant que ${response.data.role} !`);
 
-      if (role === 'ADMIN') navigate('/admin/restaurants');
-      else if (role === 'LIVREUR') navigate('/livreur/dashboard');
-      else navigate('/restaurants');
+      if (response.data.role === 'ADMIN') {
+        navigate('/admin/restaurants');
+      } else if (response.data.role === 'LIVREUR') {
+        navigate('/livreur/dashboard');
+      } else {
+        navigate('/restaurants');
+      }
     } catch (err) {
       setError('Email ou mot de passe incorrect');
     } finally {
@@ -45,7 +44,6 @@ function Login({ setIsAuthenticated, setUserRole }) {
     <div className="app-page d-flex align-items-center">
       <div className="container form-shell">
         <div className="premium-card p-4 p-md-5">
-          {/* Logo et titre */}
           <div className="text-center mb-4">
             <img 
               src="/images/logo.png" 
