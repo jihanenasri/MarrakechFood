@@ -1,4 +1,4 @@
-package com.example.clientservice.config;
+package com.example.commandeservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
