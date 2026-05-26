@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const API_CONFIG = {
-  client: 'http://localhost:8089',
-  restaurant: 'http://localhost:8083',
-  commande: 'http://localhost:8091',
-  livreur: 'http://localhost:8085'
+  client: 'https://marrakechfood-production.up.railway.app',
+  restaurant: 'https://handsome-gratitude-production-9e23.up.railway.app',
+  commande: 'https://loving-dedication-production-6a00.up.railway.app',
+  livreur: 'https://marrakechfood-production-22c2.up.railway.app'
 };
 
 export const clientAPI = {
