@@ -16,11 +16,14 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "https://chic-pavlova-e40bb6.netlify.app",
-                "http://localhost:3000",
-                "http://localhost:5173"
+        
+        // Accepter tous les domaines Netlify et localhost
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "https://*.netlify.app",
+                "http://localhost:*",
+                "http://127.0.0.1:*"
         ));
+        
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -37,11 +40,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "https://chic-pavlova-e40bb6.netlify.app",
-                                "http://localhost:3000",
-                                "http://localhost:5173"
-                        )
+                        .allowedOriginPatterns("https://*.netlify.app", "http://localhost:*", "http://127.0.0.1:*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true)
