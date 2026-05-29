@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const API_CONFIG = {
-  client: process.env.REACT_APP_CLIENT_URL,
-  restaurant: process.env.REACT_APP_RESTAURANT_URL,
-  commande: process.env.REACT_APP_COMMANDE_URL,
-  livreur: process.env.REACT_APP_LIVREUR_URL
+  client: 'https://marrakechfood-production.up.railway.app',
+  restaurant: 'https://handsome-gratitude-production-9e23.up.railway.app',
+  commande: 'https://loving-dedication-production-6a00.up.railway.app',
+  livreur: 'https://marrakechfood-production-22c2.up.railway.app'
 };
 
 export const clientAPI = {
@@ -44,5 +44,9 @@ export const livreurAPI = {
   )
 };
 
-const api = { clientAPI, restaurantAPI, commandeAPI, livreurAPI };
-export default api;
+export default {
+  clientAPI,
+  restaurantAPI,
+  commandeAPI,
+  livreurAPI
+};
