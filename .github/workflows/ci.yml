@@ -18,7 +18,7 @@ jobs:
       - name: Tester Client Service
         run: |
           cd client-service
-          mvn test
+          mvn clean test
 
   test-restaurant:
     runs-on: ubuntu-latest
@@ -31,7 +31,7 @@ jobs:
       - name: Tester Restaurant Service
         run: |
           cd restaurant-service
-          mvn test
+          mvn clean test
 
   test-commande:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
       - name: Tester Commande Service
         run: |
           cd commande-service
-          mvn test
+          mvn clean test
 
   test-livreur:
     runs-on: ubuntu-latest
@@ -57,4 +57,4 @@ jobs:
       - name: Tester Livreur Service
         run: |
           cd livreur-service
-          mvn test
+          mvn clean test
