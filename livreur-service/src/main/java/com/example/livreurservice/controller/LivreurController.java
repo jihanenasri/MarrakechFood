@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/livreurs")
-@CrossOrigin(origins = "*")
 public class LivreurController {
 
     private final LivreurService livreurService;
@@ -70,7 +70,7 @@ public class LivreurController {
             }
         }
         
-        cleanQr = cleanQr.trim().replaceAll("^\"|\"$", "");
+        cleanQr = cleanQr.trim().replaceAll("^\\\"|\\\"", "");
         
         try {
             String message = livreurService.scannerQRCode(cleanQr);

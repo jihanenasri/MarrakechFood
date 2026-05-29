@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin(origins = "*")
 public class ClientController {
 
     private final ClientService clientService;
