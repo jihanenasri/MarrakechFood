@@ -2,7 +2,7 @@ name: CI - Tests Automatiques
 
 on:
   push:
-    branches: [ main, develop,test/* ]
+    branches: [ main, develop, test/* ]
   pull_request:
     branches: [ main ]
 
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4.0.0
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4.0.0
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4.0.0
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4.0.0
         with:
           java-version: '17'
           distribution: 'temurin'
