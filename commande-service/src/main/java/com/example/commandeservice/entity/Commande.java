@@ -24,6 +24,7 @@ public class Commande {
     private Long livreurId;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CommandeItem> items = new ArrayList<>();
 
     private Double total = 0.0;
